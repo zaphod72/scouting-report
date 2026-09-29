@@ -1,0 +1,160 @@
+Montana Scouting Report Form Request
+
+
+Performance:
+
+
+Rating (0 out of 4)
+
+-----------------------------
+
+Game Information:
+
+
+"Game Difficulty" drop down options (Normal/Difficult/Very Difficult)
+
+--------------------
+
+
+Drop-down selection for "*Center Referee"* should contain the following
+options:
+
+(not applicable-0 /below expectation-1 /average-2 /above expectation-3
+/excellent-4)
+
+
+
+   1. Match Control (category header)
+      1. Recognition of fouls (enter rating)
+      2. Recognition of cautionable offenses: players (enter rating)
+      3. Recognition of warnings/cautionable offenses: coaches (enter
+      rating)
+      4. Recognition of persistent offenses (enter rating)
+      5. Use of advantage (enter rating)
+      6. Management of mass confrontations (enter rating)
+   2. Interaction with participants
+      1. Verbal communication, body language, mannerisms (enter rating)
+      2. Was open to appropriate communication from participants (enter
+      rating)
+      3. Proactive management before ball was in play (enter rating)
+      4. Recognized difference between frustration and dissent (enter
+      rating)
+      5. Showed composure in responses to match incidents (enter rating)
+      6. Identified changes in game temperature and responded accordingly
+      (enter rating)
+   3. Game Management
+      1. Injury Management (blood/head/re-entry) (enter rating)
+      2. Time Management (appropriate time played/additional time/etc)
+      (enter rating)
+      3. Restart Management (quick and ceremonial free kicks/corner
+      kicks/penalty kicks/throw in/drop ball) (enter rating)
+      4. Wall management (distance of defenders and attackers/timely set
+      up/instructions) (enter rating)
+      5. Accurate management of substitution procedures (enter rating)
+      6. Signaling according to the laws of the game (enter rating)
+      7. Equipment management (jewelry, shin guards, socks, tape,
+      undergarments) (enter rating)
+      8. Accurate completion of administrative duties before, during, and
+      after the match (enter rating)
+   4. Teamwork
+      1. Acknowledgment/overrule of AR assistance (offside, fouls,
+      misconduct, boundary) (enter rating)
+      2. Appropriate delegation of responsibilities to other crew members
+      (enter rating)
+      3. Effective use of eye contact, discrete signals, or electronic
+      communication (enter rating)
+      4. Cooperation with 4th official (fouls/misconduct, injury
+      management, substitutions, team officials) (enter rating)
+   5. Positioning
+      1. Took positions to achieve good viewing angles (enter rating)
+      2. Credible proximity to attacking play or challenges (enter rating)
+      3. Recognized low/medium and high-pressure tactics and adjusted
+      accordingly (enter rating)
+      4. Recognized the breakdown of play and adjusted accordingly (enter
+      rating)
+      5. Anticipated drop zone and adjusted position accordingly (enter
+      rating)
+      6. Adjusted body orientation to maximized viewing angles including
+      view of ARs (enter rating)
+      7. Anticipation of play vs reaction to play (enter rating)
+      8. Frequently scanned away from active play (enter rating)
+   6. Movement
+      1. Work rate matches needs of game (enter rating)
+      2. Stamina levels displayed from beginning to end (enter rating)
+      3. Sprinting ability and use of sprinting to stay close to play
+      (enter rating)
+      4. Used explosive movement, changes of pace, and changes in direction
+      (enter rating)
+      5. Appropriate use of backwards or lateral movements to achieve good
+      viewing angles (enter rating)
+      6. appropriate use of backwards or lateral movement to stay out of
+      active play zones (enter rating)
+
+
+
+--------------------
+
+
+
+Drop-down selection for *Assistant Referee* should contain the following
+options:
+
+(not applicable/below expectation/average/above expectation/excellent)
+
+
+
+   1. Offside (category header)
+      1. Correct identification of routine offside offenses (enter rating)
+      2. Correct identification of difficult offside offenses (enter rating)
+      3. Appropriately gave the benefit of doubt to the attacking team
+      (enter rating)
+      4. Appropriate use of "wait and see" principle (enter rating)
+   2. Involvement and Assistance (Category Header)
+      1. Correct assistance with boundary line decisions (enter rating)
+      2. Correct identification of fouls within their area of
+      responsibility (enter rating)
+      3. Correct identification of cautionable offenses within their area
+      of responsibility (players /team officials) (enter rating)
+      4. Appropriate switch of focus between offside, boundary line, and
+      fouls/misconduct priorities (enter rating)
+      5. Appropriate assistance within their area of responsibility
+      (player/team official management/wall management/encroachment) (enter
+      rating)
+      6. Effective use of communication (eye contact/discreet
+      signals/electronic systems) (enter rating)
+      7. Appropriate participation during mass confrontations (enter rating)
+      8. Appropriate flag mechanics and techniques (enter rating)
+   3. Positioning (Category Header)
+      1. Correct alignment with 2nd to last opponent or the ball throughout
+      the match (enter rating)
+      2. Credible positioning at goal line to make boundary or goal/no-goal
+      decisions (enter rating)
+   4. Movement (Category Header)
+      1. Appropriate use of later movement (enter rating)
+      2. Reading and anticipating transitions between lateral movements and
+      sprinting (enter rating)
+      3. Appropriate use of explosive movement and sprinting (enter rating)
+      4. Work rate matches the needs of the game (enter rating)
+      5. Stamina displayed from beginning to end (enter rating)
+
+
+Drop-down selection for *4th Official* should contain the following options:
+
+(not applicable/below expectation/average/above expectation/excellent)
+
+
+
+   1. Involvement and Assistance (category header)
+      1. Proactive and preventative management for situations within area
+      of responsibility (enter rating)
+      2. Appropriate involvement for information for fouls and misconduct
+      within their area of responsibility (enter rating)
+      3. Appropriate involvement and information for incidents out of view
+      of the referee (enter rating)
+      4. Consistent and credible recognition of warning/cautionable
+      offenses for team officials (enter rating)
+      5. Accurate management of substitution procedures (enter rating)
+      6. Appropriate assistance with injury management (medical staff,
+      blood, re-entry of players) (enter rating)
+      7. Accurate completion of administrative duties before, during, and
+      after the match (enter rating)

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scouting Report</title>
+<style>
+  :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
+  body { max-width: 52rem; margin: 0 auto; padding: 1rem; line-height: 1.4; }
+  header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+  header a { color: inherit; text-decoration: none; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: .4rem; border-bottom: 1px solid #8884; }
+  h2 { margin: 1.5rem 0 .5rem; }
+  details { border: 1px solid #8886; border-radius: .4rem; margin: .5rem 0; }
+  summary { padding: .6rem; cursor: pointer; font-weight: 600; }
+  .stat { margin-left: .75rem; font-weight: 400; opacity: .75; }
+  .item { display: flex; justify-content: space-between; gap: 1rem; align-items: center; padding: .4rem .6rem; border-top: 1px solid #8884; }
+  label.field { display: block; margin: .5rem 0; }
+  input[type=text], select { font: inherit; padding: .3rem; }
+  input[type=text] { width: 100%; box-sizing: border-box; }
+  .bar { position: sticky; bottom: 0; padding: .75rem 0; background: Canvas; display: flex; gap: 1rem; align-items: center; }
+  button { font: inherit; padding: .4rem 1rem; }
+  .err { color: #c00; }
+</style>
+</head>
+<body>
+<header><a href="#/">Scouting Report</a><span id="who"></span></header>
+<main id="app"></main>
+<script type="module" src="app.js"></script>
+</body>
+</html>
