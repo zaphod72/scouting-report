@@ -18,15 +18,6 @@
   }
   * { box-sizing: border-box; }
   body { margin: 0; font: 16px/1.45 system-ui, sans-serif; background: var(--bg); color: var(--ink); }
-  /* Pitch seen at an angle: tilted, faded toward the horizon. */
-  body::before {
-    content: ""; position: fixed; z-index: -1; left: 50%; bottom: -30vh; width: 140vmax; height: 120vmax;
-    margin-left: -70vmax; background: url(pitch.svg) center / 100% 100% no-repeat; opacity: .28;
-    transform: perspective(900px) rotateX(62deg); transform-origin: 50% 100%;
-    -webkit-mask-image: linear-gradient(to top, #000 25%, transparent 85%);
-    mask-image: linear-gradient(to top, #000 25%, transparent 85%);
-  }
-  @media (prefers-color-scheme: dark) { body::before { opacity: .22; } }
   header {
     position: sticky; top: 0; z-index: 5; display: flex; justify-content: space-between; align-items: center;
     gap: 1rem; padding: .7rem 1rem; background: var(--card); border-bottom: 1px solid var(--line);
