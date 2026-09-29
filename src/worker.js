@@ -5,7 +5,7 @@ const fail = (status, error) => json({ error }, status);
 
 // Admins can view and edit any report. Everyone else sees only their own.
 // Match the identity the API sees: the Access email (locally, the name typed at the prompt).
-const ADMINS = []; // TODO: add admin names or emails, e.g. ['Jane Smith', 'jane@example.com']
+const ADMINS = ['Darren', 'Devin']; // TODO: replace with admin emails when real login is on
 const isAdmin = (name) => ADMINS.some((a) => a.toLowerCase() === name.toLowerCase());
 
 // Production identity comes from Cloudflare Access. ctx.access exists only when Access authenticated the request.
