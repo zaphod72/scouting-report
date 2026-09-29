@@ -23,7 +23,7 @@ async function whoami(req, env, ctx) {
 
 async function readReport(req) {
   const body = await req.json().catch(() => null);
-  if (!body || typeof body.title !== 'string' || body.title.length > 200) return null;
+  if (!body || typeof body.title !== 'string' || !body.title.trim() || body.title.length > 200) return null;
   if (!body.data || typeof body.data !== 'object' || Array.isArray(body.data)) return null;
   if (!Number.isInteger(body.form_id)) return null;
   const data = JSON.stringify(body.data);

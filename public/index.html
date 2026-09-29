@@ -5,27 +5,75 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Scouting Report</title>
 <style>
-  :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
-  body { max-width: 52rem; margin: 0 auto; padding: 1rem; line-height: 1.4; }
-  header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
-  header a { color: inherit; text-decoration: none; font-weight: 700; }
-  table { width: 100%; border-collapse: collapse; }
-  th, td { text-align: left; padding: .4rem; border-bottom: 1px solid #8884; }
-  h2 { margin: 1.5rem 0 .5rem; }
-  details { border: 1px solid #8886; border-radius: .4rem; margin: .5rem 0; }
-  summary { padding: .6rem; cursor: pointer; font-weight: 600; }
-  .stat { margin-left: .75rem; font-weight: 400; opacity: .75; }
-  .item { display: flex; justify-content: space-between; gap: 1rem; align-items: center; padding: .4rem .6rem; border-top: 1px solid #8884; }
-  label.field { display: block; margin: .5rem 0; }
-  input[type=text], select { font: inherit; padding: .3rem; }
-  input[type=text] { width: 100%; box-sizing: border-box; }
-  .bar { position: sticky; bottom: 0; padding: .75rem 0; background: Canvas; display: flex; gap: 1rem; align-items: center; }
-  button { font: inherit; padding: .4rem 1rem; }
-  .err { color: #c00; }
+  :root {
+    color-scheme: light dark;
+    --bg: #e9f2ea; --card: #ffffffd9; --ink: #14261a; --muted: #55685a; --line: #1a3d2230;
+    --accent: #1f7a3d; --accent-ink: #fff; --pill: #1f7a3d1f; --shadow: 0 1px 3px #0002;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0c1610; --card: #15251bd9; --ink: #e6f0e8; --muted: #9db3a3; --line: #ffffff24;
+      --accent: #3fae5f; --accent-ink: #06210f; --pill: #3fae5f2b; --shadow: 0 1px 3px #0008;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.45 system-ui, sans-serif; background: var(--bg); color: var(--ink); }
+  /* Pitch seen at an angle: tilted, faded toward the horizon. */
+  body::before {
+    content: ""; position: fixed; z-index: -1; left: 50%; bottom: -30vh; width: 140vmax; height: 120vmax;
+    margin-left: -70vmax; background: url(pitch.svg) center / 100% 100% no-repeat; opacity: .28;
+    transform: perspective(900px) rotateX(62deg); transform-origin: 50% 100%;
+    -webkit-mask-image: linear-gradient(to top, #000 25%, transparent 85%);
+    mask-image: linear-gradient(to top, #000 25%, transparent 85%);
+  }
+  @media (prefers-color-scheme: dark) { body::before { opacity: .22; } }
+  header {
+    position: sticky; top: 0; z-index: 5; display: flex; justify-content: space-between; align-items: center;
+    gap: 1rem; padding: .7rem 1rem; background: var(--card); border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(8px);
+  }
+  header a { color: var(--ink); text-decoration: none; font-weight: 800; font-size: 1.15rem; letter-spacing: .01em; }
+  #who { color: var(--muted); font-size: .9rem; }
+  main { max-width: 52rem; margin: 0 auto; padding: 1rem; }
+  a { color: var(--accent); }
+  h2 { margin: 1.75rem 0 .6rem; padding-left: .6rem; border-left: 5px solid var(--accent); font-size: 1.25rem; }
+  main > h2:first-child { margin-top: .5rem; }
+  table { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--card); border: 1px solid var(--line);
+    border-radius: .75rem; overflow: hidden; box-shadow: var(--shadow); }
+  th, td { text-align: left; padding: .6rem .75rem; border-bottom: 1px solid var(--line); }
+  th { font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  tr:last-child td { border-bottom: 0; }
+  tr:hover td { background: var(--pill); }
+  details { background: var(--card); border: 1px solid var(--line); border-radius: .75rem; margin: .6rem 0; box-shadow: var(--shadow); overflow: hidden; }
+  summary { display: flex; align-items: center; gap: .6rem; padding: .75rem .9rem; cursor: pointer; font-weight: 650; list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  summary::before { content: "\25B8"; color: var(--accent); transition: transform .15s; }
+  details[open] > summary::before { transform: rotate(90deg); }
+  .stat { margin-left: auto; padding: .15rem .6rem; border-radius: 99px; background: var(--pill); color: var(--accent);
+    font-size: .85rem; font-weight: 600; white-space: nowrap; }
+  .item { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .55rem .9rem; border-top: 1px solid var(--line); }
+  .item select { flex: none; width: 11.5rem; }
+  label.field { display: block; margin: .75rem 0; font-weight: 600; }
+  input[type=text], select { font: inherit; padding: .45rem .55rem; border: 1px solid var(--line); border-radius: .5rem;
+    background: var(--card); color: var(--ink); }
+  input[type=text] { width: 100%; margin-top: .25rem; }
+  label.field select { margin-left: .4rem; }
+  input:focus-visible, select:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { font: inherit; font-weight: 650; padding: .5rem 1.2rem; border: 0; border-radius: .5rem; cursor: pointer;
+    background: var(--accent); color: var(--accent-ink); box-shadow: var(--shadow); }
+  button:hover { filter: brightness(1.1); }
+  .bar { position: sticky; bottom: 0; display: flex; gap: 1rem; align-items: center; margin: 1rem -1rem 0; padding: .75rem 1rem;
+    background: var(--card); border-top: 1px solid var(--line); backdrop-filter: blur(8px); }
+  .err { color: #c0392b; font-weight: 600; }
+  @media (max-width: 560px) {
+    .item { flex-direction: column; align-items: stretch; gap: .35rem; }
+    .item select { width: 100%; }
+    th:nth-child(3), td:nth-child(3) { display: none; }
+  }
 </style>
 </head>
 <body>
-<header><a href="#/">Scouting Report</a><span id="who"></span></header>
+<header><a href="#/">&#9917; Scouting Report</a><span id="who"></span></header>
 <main id="app"></main>
 <script type="module" src="app.js"></script>
 </body>

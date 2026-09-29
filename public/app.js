@@ -20,7 +20,7 @@ async function api(path, method = 'GET', body) {
 }
 
 const when = (s) => new Date(s.replace(' ', 'T') + 'Z').toLocaleString();
-const fmt = ({ count, avg }) => `${count} scored` + (avg === null ? '' : ` · avg ${avg.toFixed(2)}`);
+const fmt = ({ count, avg }, total) => `${count} of ${total} scored` + (avg === null ? '' : ` · avg ${avg.toFixed(2)}`);
 
 function askName() {
   const input = h('input', { type: 'text', required: true, maxLength: 100, placeholder: 'Your full name' });
@@ -36,9 +36,9 @@ function askName() {
   );
 }
 
-function list(reports) {
+function list(reports, me) {
   app.replaceChildren(
-    h('h2', {}, 'Reports'),
+    h('h2', {}, me.admin ? 'All reports' : 'My reports'),
     h('p', {}, h('button', { onclick: () => (location.hash = '#/new') }, 'New report')),
     h('table', {},
       h('tr', {}, ...['Game', 'Author', 'Created', 'Updated'].map((t) => h('th', {}, t))),
@@ -66,14 +66,14 @@ async function edit(id) {
   data.scores ??= {};
   const ratings = [['', '—'], ...def.scale.map(([v, label]) => [v, v === 0 ? label : `${v} ${label}`])];
 
-  const title = h('input', { type: 'text', maxLength: 200, value: report.title, placeholder: 'e.g. Team A vs Team B, 2026-09-29' });
+  const title = h('input', { type: 'text', required: true, maxLength: 200, value: report.title, placeholder: 'e.g. Team A vs Team B, 2026-09-29' });
   const difficulty = select([['', '—'], ...def.difficulty.map((d) => [d, d])], data.difficulty, (v) => (data.difficulty = v));
   const overall = select(ratings, data.overall, (v) => (data.overall = v));
 
   const category = (c) => {
     const ids = c.items.map((i) => i.id);
     const stat = h('span', { className: 'stat' });
-    const update = () => (stat.textContent = fmt(summarize(ids, data.scores)));
+    const update = () => (stat.textContent = fmt(summarize(ids, data.scores), ids.length));
     update();
     return h('details', {},
       h('summary', {}, c.name, stat),
@@ -89,6 +89,10 @@ async function edit(id) {
 
   const status = h('span');
   const save = async () => {
+    if (!title.value.trim()) {
+      title.value = '';
+      return title.reportValidity();
+    }
     status.className = '';
     status.textContent = 'Saving…';
     const body = { form_id: report.form_id, title: title.value, data };
@@ -108,7 +112,7 @@ async function edit(id) {
   app.replaceChildren(
     h('h2', {}, form.name),
     id ? h('p', {}, `Created by ${report.author} on ${when(report.created_at)}`) : '',
-    h('label', { className: 'field' }, 'Game', title),
+    h('label', { className: 'field' }, 'Game *', title),
     h('label', { className: 'field' }, 'Game Difficulty ', difficulty),
     h('label', { className: 'field' }, 'Performance rating ', overall),
     ...def.roles.flatMap((r) => [h('h2', {}, r.name), ...r.categories.map(category)]),
@@ -127,7 +131,7 @@ async function route() {
     const [, page, id] = location.hash.split('/');
     if (page === 'new') return await edit();
     if (page === 'r') return await edit(Number(id));
-    list(await api('/reports'));
+    list(await api('/reports'), me);
   } catch (e) {
     app.replaceChildren(h('p', { className: 'err' }, e.message));
   }

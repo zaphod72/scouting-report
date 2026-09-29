@@ -7,7 +7,7 @@ Simple site for officials to fill in the MOA scouting form. Cloudflare Worker + 
 - `schema.sql`, `seed.mjs` database schema and the form definition (stored in D1 as JSON)
 - Source form: `Assessable Categories for MOA Refs.txt`
 
-Rating 0 is N/A. Only ratings 1-4 count toward a category's "scored" count and average.
+Rating 0 is N/A. Any answer, including N/A, counts toward a category's "n of total scored". Only ratings 1-4 enter the average.
 
 ## Run locally
 
