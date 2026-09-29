@@ -41,10 +41,11 @@ function list(reports) {
     h('h2', {}, 'Reports'),
     h('p', {}, h('button', { onclick: () => (location.hash = '#/new') }, 'New report')),
     h('table', {},
-      h('tr', {}, ...['Game', 'Author', 'Updated'].map((t) => h('th', {}, t))),
+      h('tr', {}, ...['Game', 'Author', 'Created', 'Updated'].map((t) => h('th', {}, t))),
       ...reports.map((r) => h('tr', {},
         h('td', {}, h('a', { href: `#/r/${r.id}` }, r.title || '(untitled)')),
         h('td', {}, r.author),
+        h('td', {}, when(r.created_at)),
         h('td', {}, when(r.updated_at)),
       )),
     ),
@@ -106,6 +107,7 @@ async function edit(id) {
 
   app.replaceChildren(
     h('h2', {}, form.name),
+    id ? h('p', {}, `Created by ${report.author} on ${when(report.created_at)}`) : '',
     h('label', { className: 'field' }, 'Game', title),
     h('label', { className: 'field' }, 'Game Difficulty ', difficulty),
     h('label', { className: 'field' }, 'Performance rating ', overall),
@@ -117,8 +119,11 @@ async function edit(id) {
 async function route() {
   try {
     const me = await api('/me');
-    if (!me.name) return askName();
-    document.getElementById('who').textContent = me.name;
+    if (!me.name) {
+      if (me.cookieLogin) return askName();
+      throw new Error('Sign-in required. Open this site through its Cloudflare Access login.');
+    }
+    document.getElementById('who').textContent = me.name + (me.admin ? ' (admin)' : '');
     const [, page, id] = location.hash.split('/');
     if (page === 'new') return await edit();
     if (page === 'r') return await edit(Number(id));

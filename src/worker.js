@@ -3,10 +3,16 @@
 const json = (data, status = 200) => Response.json(data, { status });
 const fail = (status, error) => json({ error }, status);
 
-// Cloudflare Access (Google sign-in) sets the email header; otherwise use the name cookie.
-function whoami(req) {
-  const email = req.headers.get('Cf-Access-Authenticated-User-Email');
-  if (email) return email;
+// Admins can view and edit any report. Everyone else sees only their own.
+// Match the identity the API sees: the Access email (locally, the name typed at the prompt).
+const ADMINS = []; // TODO: add admin names or emails, e.g. ['Jane Smith', 'jane@example.com']
+const isAdmin = (name) => ADMINS.some((a) => a.toLowerCase() === name.toLowerCase());
+
+// Production identity comes from Cloudflare Access. ctx.access exists only when Access authenticated the request.
+// The name cookie works only when DEV_COOKIE_LOGIN is set (local dev, in .dev.vars); otherwise no identity.
+async function whoami(req, env, ctx) {
+  if (ctx.access) return (await ctx.access.getIdentity())?.email ?? '';
+  if (!env.DEV_COOKIE_LOGIN) return '';
   const m = /(?:^|;\s*)name=([^;]*)/.exec(req.headers.get('Cookie') || '');
   try {
     return m ? decodeURIComponent(m[1]).trim().slice(0, 100) : '';
@@ -26,15 +32,15 @@ async function readReport(req) {
 }
 
 export default {
-  async fetch(req, env) {
+  async fetch(req, env, ctx) {
     const [, , resource, rawId] = new URL(req.url).pathname.split('/'); // /api/<resource>/<id>
     const id = Number(rawId);
     const { method } = req;
     const db = env.DB;
-    const name = whoami(req);
+    const name = await whoami(req, env, ctx);
 
     if (resource === 'me' && method === 'GET') {
-      return json({ name, sso: req.headers.has('Cf-Access-Authenticated-User-Email') });
+      return json({ name, admin: isAdmin(name), cookieLogin: !!env.DEV_COOKIE_LOGIN });
     }
 
     if (resource === 'forms' && method === 'GET') {
@@ -44,17 +50,26 @@ export default {
     }
 
     if (resource === 'reports') {
+      if (!name) return fail(401, 'name required');
+      const admin = isAdmin(name) ? 1 : 0;
+      // "author = ? COLLATE NOCASE OR ?" lets the owner or an admin through, in one query.
       if (method === 'GET' && !rawId) {
         const { results } = await db
-          .prepare('SELECT id, form_id, author, title, updated_at FROM reports ORDER BY updated_at DESC LIMIT 500')
+          .prepare(
+            `SELECT id, form_id, author, title, created_at, updated_at FROM reports
+             WHERE author = ? COLLATE NOCASE OR ? ORDER BY updated_at DESC LIMIT 500`,
+          )
+          .bind(name, admin)
           .all();
         return json(results);
       }
       if (method === 'GET') {
-        const row = await db.prepare('SELECT * FROM reports WHERE id = ?').bind(id).first();
+        const row = await db
+          .prepare('SELECT * FROM reports WHERE id = ? AND (author = ? COLLATE NOCASE OR ?)')
+          .bind(id, name, admin)
+          .first();
         return row ? json({ ...row, data: JSON.parse(row.data) }) : fail(404, 'not found');
       }
-      if (!name) return fail(401, 'name required');
       const r = await readReport(req);
       if (!r) return fail(400, 'invalid report');
       if (method === 'POST' && !rawId) {
@@ -66,8 +81,11 @@ export default {
       }
       if (method === 'PUT' && rawId) {
         const res = await db
-          .prepare("UPDATE reports SET title = ?, data = ?, updated_at = datetime('now') WHERE id = ?")
-          .bind(r.title, r.data, id)
+          .prepare(
+            `UPDATE reports SET title = ?, data = ?, updated_at = datetime('now')
+             WHERE id = ? AND (author = ? COLLATE NOCASE OR ?)`,
+          )
+          .bind(r.title, r.data, id, name, admin)
           .run();
         return res.meta.changes ? json({ id }) : fail(404, 'not found');
       }

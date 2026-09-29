@@ -9,5 +9,4 @@ run_worker_first = ["/api/*"]
 [[d1_databases]]
 binding = "DB"
 database_name = "scouting-report"
-# Replace with the id printed by: npx wrangler d1 create scouting-report
-database_id = "00000000-0000-0000-0000-000000000000"
+database_id = "fdd6de15-1298-4629-81bd-90bcef1ee08b"

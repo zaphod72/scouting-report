@@ -23,10 +23,21 @@ Rating 0 is N/A. Only ratings 1-4 count toward a category's "scored" count and a
     npm run db:remote
     npm run deploy
 
+Then protect the Worker with Cloudflare Access (see Identity). Add admin emails to `ADMINS` in `src/worker.js` and redeploy.
+
 ## Identity
 
-The API uses the `Cf-Access-Authenticated-User-Email` header when present (Cloudflare Access with Google sign-in, no code change).
-Otherwise it uses the `name` cookie set by the name prompt. Neither is verified without Access.
+Login is Cloudflare Access (free up to 50 users). Sign-in is Google.
+The Worker reads the signed-in email from `ctx.access`, which exists only when Access authenticated the request.
+Without Access, the API has no identity and returns 401.
+
+Set up Access: dashboard > Workers & Pages > scouting-report > Access tab > "Protect this Worker behind Access" > All traffic.
+Pick an allow policy (specific emails, or an email domain).
+Add Google as a login method under Zero Trust > Settings > Authentication if the policy needs it.
+
+Local dev has no Access. `.dev.vars` (gitignored) sets `DEV_COOKIE_LOGIN=1`, which enables a name prompt and cookie instead. Never set it in production.
+
+Each report stores its creator and creation date. Only the creator can view or edit it. Emails in `ADMINS` can view and edit every report.
 
 ## v2 notes
 
