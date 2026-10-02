@@ -15,7 +15,7 @@ Do not enter real assessments until real login is in place.
 | Database | Cloudflare D1 `scouting-report`, schema and MOA form loaded |
 | Form | 64 line items in 11 categories (Center Referee, Assistant Referee, 4th Official), plus game title, Game Difficulty and overall rating |
 | Category stats | Collapsed or open, each category shows "n of total scored" and the average. No average when no item has a rating of 1 to 4 |
-| Rating rules | 0 is N/A. N/A counts as scored, but only ratings 1 to 4 enter the average |
+| Rating rules | Line items: "Don't calculate here" (nothing stored) or 1 to 4. Only 1 to 4 count as scored and enter the average. Game Difficulty and Performance (1 to 4) are required |
 | Ownership | Each report stores its creator and creation date. Only the creator can view or edit it |
 | Admins | Names in `ADMINS` (`src/worker.js`) can view and edit every report. Test mode: `Darren` and `Devin` |
 | Login | Test mode: name cookie, enabled by `DEV_COOKIE_LOGIN` in `wrangler.toml`. Real login: not built yet |

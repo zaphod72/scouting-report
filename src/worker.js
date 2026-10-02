@@ -26,6 +26,9 @@ async function readReport(req) {
   if (!body || typeof body.title !== 'string' || !body.title.trim() || body.title.length > 200) return null;
   if (!body.data || typeof body.data !== 'object' || Array.isArray(body.data)) return null;
   if (!Number.isInteger(body.form_id)) return null;
+  const { difficulty, overall } = body.data;
+  if (typeof difficulty !== 'string' || !difficulty || difficulty.length > 50) return null;
+  if (!['1', '2', '3', '4'].includes(String(overall))) return null;
   const data = JSON.stringify(body.data);
   if (data.length > 100_000) return null;
   return { form_id: body.form_id, title: body.title.trim(), data };
