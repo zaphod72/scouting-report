@@ -24,7 +24,8 @@
     backdrop-filter: blur(8px);
   }
   header a { color: var(--ink); text-decoration: none; font-weight: 800; font-size: 1.15rem; letter-spacing: .01em; }
-  #who { color: var(--muted); font-size: .9rem; }
+  .right { display: flex; align-items: baseline; gap: .75rem; color: var(--muted); font-size: .9rem; }
+  #ver { padding: .1rem .5rem; border: 1px solid var(--line); border-radius: 99px; font-size: .8rem; }
   main { max-width: 52rem; margin: 0 auto; padding: 1rem; }
   a { color: var(--accent); }
   h2 { margin: 1.75rem 0 .6rem; padding-left: .6rem; border-left: 5px solid var(--accent); font-size: 1.25rem; }
@@ -64,7 +65,7 @@
 </style>
 </head>
 <body>
-<header><a href="#/">&#9917; Scouting Report</a><span id="who"></span></header>
+<header><a href="#/">&#9917; Scouting Report</a><span class="right"><span id="who"></span><span id="ver"></span></span></header>
 <main id="app"></main>
 <script type="module" src="app.js"></script>
 </body>

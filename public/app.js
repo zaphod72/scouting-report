@@ -131,6 +131,7 @@ async function edit(id) {
 async function route() {
   try {
     const me = await api('/me');
+    document.getElementById('ver').textContent = `v${me.version}`;
     if (!me.name) {
       if (me.cookieLogin) return askName();
       throw new Error('Sign-in required. Open this site through its Cloudflare Access login.');

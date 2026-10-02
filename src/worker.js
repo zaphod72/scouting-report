@@ -1,3 +1,5 @@
+import pkg from '../package.json';
+
 // Only /api/* reaches this Worker (see run_worker_first in wrangler.toml); static files are served directly.
 
 const json = (data, status = 200) => Response.json(data, { status });
@@ -43,7 +45,7 @@ export default {
     const name = await whoami(req, env, ctx);
 
     if (resource === 'me' && method === 'GET') {
-      return json({ name, admin: isAdmin(name), cookieLogin: !!env.DEV_COOKIE_LOGIN });
+      return json({ name, admin: isAdmin(name), cookieLogin: !!env.DEV_COOKIE_LOGIN, version: pkg.version });
     }
 
     if (resource === 'forms' && method === 'GET') {
