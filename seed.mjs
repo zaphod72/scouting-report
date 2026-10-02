@@ -1,4 +1,5 @@
 // Prints SQL that seeds the MOA form definition (only if no form exists yet).
+// With --update it replaces the definition of form 1 instead.
 // Item ids are positional (cr-1-1, ar-2-3, ...). A v2 upload that replaces a form must keep ids stable
 // for items that survive, or saved reports lose their scores.
 const roles = [
@@ -96,6 +97,11 @@ const roles = [
   ]],
 ];
 
+// A match has two ARs: same categories, scored separately (ids ar-*, ar2-*).
+const ar = roles.find(([id]) => id === 'ar');
+ar[1] = 'Assistant Referee 1';
+roles.splice(roles.indexOf(ar) + 1, 0, ['ar2', 'Assistant Referee 2', ar[2]]);
+
 const def = {
   scale: [[0, 'N/A'], [1, 'Below expectation'], [2, 'Average'], [3, 'Above expectation'], [4, 'Excellent']],
   difficulty: ['Normal', 'Difficult', 'Very Difficult'],
@@ -111,7 +117,9 @@ const def = {
 };
 
 const q = (s) => `'${s.replaceAll("'", "''")}'`;
+const json = q(JSON.stringify(def));
 console.log(
-  `INSERT INTO forms (name, def) SELECT ${q('MOA Scouting Report')}, ${q(JSON.stringify(def))} ` +
-    'WHERE NOT EXISTS (SELECT 1 FROM forms);',
+  process.argv.includes('--update')
+    ? `UPDATE forms SET def = ${json}, updated_at = datetime('now') WHERE id = 1;`
+    : `INSERT INTO forms (name, def) SELECT ${q('MOA Scouting Report')}, ${json} WHERE NOT EXISTS (SELECT 1 FROM forms);`,
 );
