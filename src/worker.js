@@ -31,6 +31,12 @@ async function readReport(req) {
   const { difficulty, overall } = body.data;
   if (typeof difficulty !== 'string' || !difficulty || difficulty.length > 50) return null;
   if (!['1', '2', '3', '4'].includes(String(overall))) return null;
+  // Ids are `<position>-<category>-<item>`. A position with a rating needs a name.
+  const scored = new Set(Object.entries(body.data.scores ?? {}).filter(([, v]) => v >= 1).map(([k]) => k.split('-')[0]));
+  for (const pos of scored) {
+    const name = body.data.names?.[pos];
+    if (typeof name !== 'string' || !name.trim()) return null;
+  }
   const data = JSON.stringify(body.data);
   if (data.length > 100_000) return null;
   return { form_id: body.form_id, title: body.title.trim(), data };
