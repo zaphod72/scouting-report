@@ -52,8 +52,10 @@ function list(reports, me) {
   );
 }
 
-const select = (options, current, onchange) =>
-  h('select', { onchange: (e) => onchange(e.target.value) },
+// required: start empty, with a hidden placeholder so blank cannot be picked.
+const select = (options, current, onchange, required = false) =>
+  h('select', { required, onchange: (e) => onchange(e.target.value) },
+    ...(required ? [h('option', { value: '', disabled: true, hidden: true, selected: !options.some(([v]) => String(v) === String(current)) })] : []),
     ...options.map(([value, label]) => h('option', { value, selected: String(current ?? '') === String(value) }, label)));
 
 async function edit(id) {
@@ -65,11 +67,13 @@ async function edit(id) {
   const data = report.data;
   data.scores ??= {};
   data.names ??= {};
-  const ratings = [['', '—'], ...def.scale.map(([v, label]) => [v, v === 0 ? label : `${v} ${label}`])];
+  for (const k in data.scores) if (!(data.scores[k] >= 1)) delete data.scores[k]; // drop legacy N/A (0)
+  const scale = def.scale.filter(([v]) => v >= 1).map(([v, label]) => [v, `${v} ${label}`]);
+  const itemRatings = [['', "Don't calculate here"], ...scale];
 
   const title = h('input', { type: 'text', required: true, maxLength: 200, value: report.title, placeholder: 'e.g. Team A vs Team B, 2026-09-29' });
-  const difficulty = select([['', '—'], ...def.difficulty.map((d) => [d, d])], data.difficulty, (v) => (data.difficulty = v));
-  const overall = select(ratings, data.overall, (v) => (data.overall = v));
+  const difficulty = select(def.difficulty.map((d) => [d, d]), data.difficulty, (v) => (data.difficulty = v), true);
+  const overall = select(scale, data.overall, (v) => (data.overall = v), true);
 
   const category = (c) => {
     const ids = c.items.map((i) => i.id);
@@ -80,7 +84,7 @@ async function edit(id) {
       h('summary', {}, c.name, stat),
       ...c.items.map((i) => h('label', { className: 'item' },
         h('span', {}, i.text),
-        select(ratings, data.scores[i.id], (v) => {
+        select(itemRatings, data.scores[i.id], (v) => {
           v === '' ? delete data.scores[i.id] : (data.scores[i.id] = Number(v));
           update();
         }),
@@ -90,10 +94,8 @@ async function edit(id) {
 
   const status = h('span');
   const save = async () => {
-    if (!title.value.trim()) {
-      title.value = '';
-      return title.reportValidity();
-    }
+    if (!title.value.trim()) title.value = '';
+    if (![title, difficulty, overall].every((f) => f.reportValidity())) return;
     status.className = '';
     status.textContent = 'Saving…';
     const body = { form_id: report.form_id, title: title.value, data };
@@ -114,8 +116,8 @@ async function edit(id) {
     h('h2', {}, form.name),
     id ? h('p', {}, `Created by ${report.author} on ${when(report.created_at)}`) : '',
     h('label', { className: 'field' }, 'Game *', title),
-    h('label', { className: 'field' }, 'Game Difficulty ', difficulty),
-    h('label', { className: 'field' }, 'Performance rating ', overall),
+    h('label', { className: 'field' }, 'Game Difficulty * ', difficulty),
+    h('label', { className: 'field' }, 'Performance rating * ', overall),
     ...def.roles.flatMap((r) => [
       h('h2', {}, r.name),
       h('label', { className: 'field' }, `${r.name} name`,
