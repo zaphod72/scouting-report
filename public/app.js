@@ -64,6 +64,7 @@ async function edit(id) {
   const { def } = form;
   const data = report.data;
   data.scores ??= {};
+  data.names ??= {};
   const ratings = [['', '—'], ...def.scale.map(([v, label]) => [v, v === 0 ? label : `${v} ${label}`])];
 
   const title = h('input', { type: 'text', required: true, maxLength: 200, value: report.title, placeholder: 'e.g. Team A vs Team B, 2026-09-29' });
@@ -115,7 +116,12 @@ async function edit(id) {
     h('label', { className: 'field' }, 'Game *', title),
     h('label', { className: 'field' }, 'Game Difficulty ', difficulty),
     h('label', { className: 'field' }, 'Performance rating ', overall),
-    ...def.roles.flatMap((r) => [h('h2', {}, r.name), ...r.categories.map(category)]),
+    ...def.roles.flatMap((r) => [
+      h('h2', {}, r.name),
+      h('label', { className: 'field' }, `${r.name} name`,
+        h('input', { type: 'text', maxLength: 100, value: data.names[r.id] ?? '', oninput: (e) => (data.names[r.id] = e.target.value) })),
+      ...r.categories.map(category),
+    ]),
     h('div', { className: 'bar' }, h('button', { onclick: save }, 'Save'), status),
   );
 }
