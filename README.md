@@ -17,6 +17,8 @@ Game Difficulty and Performance (1-4) are required.
     npm run dev        # http://localhost:8787
     npm test
 
+Changed the form in `seed.mjs`? Run `npm run form:local` or `npm run form:remote` to replace form 1's definition (reports keep their scores by item id).
+
 ## Deploy (Cloudflare free tier)
 
     npx wrangler login

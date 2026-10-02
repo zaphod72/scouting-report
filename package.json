@@ -7,6 +7,8 @@
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "db:local": "wrangler d1 execute scouting-report --local --file schema.sql && node seed.mjs > seed.sql && wrangler d1 execute scouting-report --local --file seed.sql",
+    "form:local": "node seed.mjs --update > seed.sql && wrangler d1 execute scouting-report --local --file seed.sql",
+    "form:remote": "node seed.mjs --update > seed.sql && wrangler d1 execute scouting-report --remote --file seed.sql",
     "db:remote": "wrangler d1 execute scouting-report --remote --file schema.sql && node seed.mjs > seed.sql && wrangler d1 execute scouting-report --remote --file seed.sql"
   },
   "devDependencies": {
