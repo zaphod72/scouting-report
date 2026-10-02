@@ -75,6 +75,19 @@ async function edit(id) {
   const difficulty = select(def.difficulty.map((d) => [d, d]), data.difficulty, (v) => (data.difficulty = v), true);
   const overall = select(scale, data.overall, (v) => (data.overall = v), true);
 
+  // A position's name is required once any of its items has a rating.
+  const nameFields = def.roles.map((r) => {
+    const text = h('span', {});
+    const input = h('input', { type: 'text', maxLength: 100, value: data.names[r.id] ?? '', oninput: (e) => (data.names[r.id] = e.target.value) });
+    const ids = r.categories.flatMap((c) => c.items.map((i) => i.id));
+    return { r, text, input, label: h('label', { className: 'field' }, text, input), ids };
+  });
+  const syncNames = () => nameFields.forEach(({ r, text, input, ids }) => {
+    input.required = ids.some((i) => data.scores[i] >= 1);
+    text.textContent = `${r.name} name${input.required ? ' *' : ''}`;
+  });
+  syncNames();
+
   const category = (c) => {
     const ids = c.items.map((i) => i.id);
     const stat = h('span', { className: 'stat' });
@@ -87,6 +100,7 @@ async function edit(id) {
         select(itemRatings, data.scores[i.id], (v) => {
           v === '' ? delete data.scores[i.id] : (data.scores[i.id] = Number(v));
           update();
+          syncNames();
         }),
       )),
     );
@@ -95,7 +109,8 @@ async function edit(id) {
   const status = h('span');
   const save = async () => {
     if (!title.value.trim()) title.value = '';
-    if (![title, difficulty, overall].every((f) => f.reportValidity())) return;
+    nameFields.forEach(({ input }) => { if (!input.value.trim()) input.value = ''; });
+    if (![title, difficulty, overall, ...nameFields.map((n) => n.input)].every((f) => f.reportValidity())) return;
     status.className = '';
     status.textContent = 'Saving…';
     const body = { form_id: report.form_id, title: title.value, data };
@@ -118,12 +133,7 @@ async function edit(id) {
     h('label', { className: 'field' }, 'Game *', title),
     h('label', { className: 'field' }, 'Game Difficulty * ', difficulty),
     h('label', { className: 'field' }, 'Performance rating * ', overall),
-    ...def.roles.flatMap((r) => [
-      h('h2', {}, r.name),
-      h('label', { className: 'field' }, `${r.name} name`,
-        h('input', { type: 'text', maxLength: 100, value: data.names[r.id] ?? '', oninput: (e) => (data.names[r.id] = e.target.value) })),
-      ...r.categories.map(category),
-    ]),
+    ...nameFields.flatMap(({ r, label }) => [h('h2', {}, r.name), label, ...r.categories.map(category)]),
     h('div', { className: 'bar' }, h('button', { onclick: save }, 'Save'), status),
   );
 }
